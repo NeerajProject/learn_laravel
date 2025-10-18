@@ -58,7 +58,7 @@ class AccountWebController extends Controller
     public function edit(Account $account)
     {
         // Renders the Accounts/Edit React component with the specific account data
-        return Inertia::render('Accounts/Edit', [
+        return Inertia::render('account/edit', [
         
         ]);
     }

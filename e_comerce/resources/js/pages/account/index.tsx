@@ -46,26 +46,15 @@ export default function Dashboard() {
             <th className="border px-2 py-1">Name</th>
             <th className="border px-2 py-1">Code</th>
             <th className="border px-2 py-1">Type</th>
-            <th className="border px-2 py-1"></th>
 
           </tr>
         </thead>
         <tbody>
           {accounts.map((account) => (
-            <tr key={account.id}>
+<tr key={account.id} className="cursor-pointer hover:bg-gray-100" onClick={() => router.visit(`/account/${account.id}`)}>
               <td className="border px-2 py-1">{account.name}</td>
               <td className="border px-2 py-1">{account.code}</td>
               <td className="border px-2 py-1">{account.type}</td>
-              <td className="border px-2 py-1">
-<button
-                  onClick={() => handleDelete(account.id)}
-                  className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
-                >
-                  Delete
-                </button>
-
-              </td>
-
             </tr>
           ))}
         </tbody>

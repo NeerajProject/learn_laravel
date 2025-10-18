@@ -15,8 +15,11 @@ class AccountWebController extends Controller
      */
     public function index()
     {
+        $accounts = Account::all();
 
-        return Inertia::render('account/index',[]);
+    return Inertia::render('account/index', [
+        'accounts' => $accounts
+    ]);
     }
 
     /**
@@ -52,47 +55,48 @@ class AccountWebController extends Controller
      * Show the form for editing the specified resource (UPDATE - Form View).
      * GET /accounts/{account}/edit
      */
-    public function edit(Account $account)
-    {
-        // Renders the Accounts/Edit React component with the specific account data
-        return Inertia::render('Accounts/Edit', [
-            'account' => $account,
-            'accountTypes' => ['Asset', 'Liability', 'Equity', 'Revenue', 'Expense'],
-        ]);
-    }
+
+    public function edit($account) {
+    $account = Account::find($account);
+    return Inertia::render('account/edit', ['account' => $account]);
+}
     
     /**
      * Update the specified resource in storage (UPDATE - PUT/PATCH).
      */
-    public function update(Request $request, Account $account)
+public function update(Request $request, $id)
     {
-        $validated = $request->validate([
+        $account = Account::findOrFail($id);
+
+        $request->validate([
             'name' => 'required|string|max:255',
-            // Unique rule: ignore the current account's ID for uniqueness check
-            'code' => ['required', 'string', 'max:20', Rule::unique('accounts', 'code')->ignore($account->id)],
-            'type' => ['required', Rule::in(['Asset', 'Liability', 'Equity', 'Revenue', 'Expense'])],
-            'sub_type' => 'nullable|string|max:100',
+            'code' => 'required|string|max:50|unique:accounts,code,' . $id,
+            'type' => 'required|string|in:Asset,Liability,Equity,Revenue,Expense',
         ]);
 
-        $account->update($validated);
+        $account->update($request->all());
 
-        // Redirect back to the index page with a success flash message
-        return redirect()->route('accounts.index')
-            ->with('success', 'Account updated successfully!');
+        return redirect()->route('account.index')
+            ->with('success', 'Account updated successfully.');
     }
+
 
     /**
      * Remove the specified resource from storage (DELETE).
      */
-    public function destroy(Account $account)
-    {
-        // In a real application, you would add a check here to ensure 
-        // the account is not linked to any transactions before deleting.
+public function destroy($id)
+{
+    // dd($id);
+    $account = Account::find($id);
 
-        $account->delete();
-
-        // Redirect back to the index page after deletion
-        return redirect()->route('accounts.index')
-            ->with('success', 'Account deleted successfully.');
+    if (!$account) {
+        return redirect()->back()->with('error', 'Account not found.');
     }
+
+    $account->delete();
+
+    return redirect()->route('account.index')->with('success', 'Account deleted successfully.');
+}
+
+
 }

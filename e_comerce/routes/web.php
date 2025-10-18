@@ -14,6 +14,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
     
      Route::get('/account', [AccountWebController::class,'index'])->name('account.index');
+     Route::get('/account/create', [AccountWebController::class,'create'])->name('account.create');
+
 
 });
 

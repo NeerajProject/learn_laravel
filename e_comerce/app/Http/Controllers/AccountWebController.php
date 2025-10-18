@@ -18,29 +18,36 @@ public function index(Request $request)
     $query = Account::query();
 
     // Search by name or code
-    if ($request->has('search') && $request->search != '') {
+    if ($request->filled('search')) {
         $search = $request->search;
-        $query->where(function($q) use ($search) {
+        $query->where(function ($q) use ($search) {
             $q->where('name', 'like', "%{$search}%")
               ->orWhere('code', 'like', "%{$search}%");
         });
     }
 
     // Filter by type
-    if ($request->has('type') && $request->type != '') {
+    if ($request->filled('type')) {
         $query->where('type', $request->type);
     }
 
-    // Paginate with query string
-    $accounts = $query->orderBy('id', 'desc')
-                     ->paginate(50)
-                     ->withQueryString();
+    // Group by column if provided
+    $groupBy = $request->input('group_by');
+    if ($groupBy) {
+        $query->select($groupBy, \DB::raw('count(*) as total'))
+              ->groupBy($groupBy)
+              ->orderBy($groupBy, 'asc');
+    }
+
+    // Paginate
+    $accounts = $query->paginate(10)->withQueryString();
 
     return Inertia::render('account/index', [
         'accounts' => $accounts,
-        'filters' => $request->only(['type', 'search']),
+        'filters' => $request->only(['search', 'type', 'group_by']),
     ]);
 }
+
 
 
     /**

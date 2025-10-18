@@ -15,15 +15,16 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function Dashboard() {
 
- const { accounts, filters } = usePage().props;
 
   // Form state for search + filter
+ const { accounts, filters } = usePage().props;
+
   const { data, setData } = useForm({
     search: filters.search || '',
     type: filters.type || '',
+    group_by: filters.group_by || '',
   });
 
-  // Handle search and filter change
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setData(name, value);
@@ -44,7 +45,8 @@ export default function Dashboard() {
                   </div>
 
   <div>
-      {/* Search + Filter */}
+      <div>
+      {/* Filters */}
       <div className="mb-4 flex gap-2">
         <input
           type="text"
@@ -68,6 +70,17 @@ export default function Dashboard() {
           <option value="Revenue">Revenue</option>
           <option value="Expense">Expense</option>
         </select>
+
+        <select
+          name="group_by"
+          value={data.group_by}
+          onChange={handleChange}
+          className="border px-2 py-1 rounded"
+        >
+          <option value="">No Group</option>
+          <option value="type">Group by Type</option>
+          <option value="code">Group by Code</option>
+        </select>
       </div>
 
       {/* Table */}
@@ -77,18 +90,22 @@ export default function Dashboard() {
             <th>Name</th>
             <th>Code</th>
             <th>Type</th>
+            {data.group_by && <th>Total</th>}
           </tr>
         </thead>
         <tbody>
           {accounts.data.map((account: any) => (
             <tr
-              key={account.id}
+              key={account.id ?? account.type ?? account.code}
               className="cursor-pointer hover:bg-gray-100"
-              onClick={() => router.visit(`/account/${account.id}/edit`)}
+              onClick={() =>
+                !data.group_by && router.visit(`/account/${account.id}/edit`)
+              }
             >
-              <td>{account.name}</td>
-              <td>{account.code}</td>
-              <td>{account.type}</td>
+              <td>{account.name ?? '-'}</td>
+              <td>{account.code ?? '-'}</td>
+              <td>{account.type ?? '-'}</td>
+              {data.group_by && <td>{account.total ?? '-'}</td>}
             </tr>
           ))}
         </tbody>
@@ -106,6 +123,7 @@ export default function Dashboard() {
           </Button>
         ))}
       </div>
+    </div>
     </div>
         
      

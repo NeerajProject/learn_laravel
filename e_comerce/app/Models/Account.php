@@ -25,9 +25,7 @@ class Account extends Model
     protected $fillable = [
         'name',
         'code',
-        'type',
-        'sub_type',
-    ];
+        'type'    ];
 
     /**
      * The attributes that should be cast to native types.

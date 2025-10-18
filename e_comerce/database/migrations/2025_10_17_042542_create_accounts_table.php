@@ -34,7 +34,6 @@ return new class extends Migration
 
             // Secondary Classification (e.g., 'Current Asset', 'Accounts Receivable')
             // This field can be used for the detailed grouping from your original list.
-            $table->string('sub_type', 100)->nullable()->comment('The detailed classification of the account, like "Current Asset" or "Notes Payable".');
 
             // Standard Timestamps (created_at and updated_at)
             $table->timestamps();

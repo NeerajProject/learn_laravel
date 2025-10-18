@@ -30,7 +30,7 @@ const mainNavItems: NavItem[] = [
     
            {
         title: 'Accounts',
-        href: dashboard(),
+        href: '/account',
         icon: ShoppingBag,
     },
 

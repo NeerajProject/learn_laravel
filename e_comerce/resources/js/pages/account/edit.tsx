@@ -5,7 +5,7 @@ import { SelectGroup } from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
-import { Form, Head, Link ,useForm} from '@inertiajs/react';
+import { Form, Head, Link ,useForm,usePage,router} from '@inertiajs/react';
 import { Label } from '@radix-ui/react-dropdown-menu';
 
 
@@ -17,15 +17,25 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function Create() {
-      const { data, setData, post, processing, errors } = useForm({
-    name: '',
-    code: '',
-    type: '',
+    const { props } = usePage();
+  const account = props.account;
+
+  const { data, setData, put,delete: destroy, processing, errors } = useForm({
+    name: account?.name || '',
+    code: account?.code || '',
+    type: account?.type || '',
   });
 
-      const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-     post('/account/create',data);
+    put(`/account/${account.id}/update`, data); // Use PUT for edit
+  };
+
+  const handleDelete = () => {
+    if (confirm('Are you sure?')) {
+        console.log(account.id);
+      router.delete(`/account/delete/${account.id}`);
+    }
   };
 
 
@@ -36,6 +46,8 @@ export default function Create() {
             <form className='space-y-4' onSubmit={handleSubmit}>
                 <div className='m-4'>
                     <Button type="submit" disabled={processing}>Save</Button>
+                          <Button type="button" onClick={handleDelete}>Delete</Button>
+
                 </div>
                 <div className="w-8/12 p-4 space-y-4">
 

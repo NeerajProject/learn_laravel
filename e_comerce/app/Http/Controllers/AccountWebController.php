@@ -15,8 +15,11 @@ class AccountWebController extends Controller
      */
     public function index()
     {
+        $accounts = Account::all();
 
-        return Inertia::render('account/index',[]);
+    return Inertia::render('account/index', [
+        'accounts' => $accounts
+    ]);
     }
 
     /**
@@ -56,8 +59,7 @@ class AccountWebController extends Controller
     {
         // Renders the Accounts/Edit React component with the specific account data
         return Inertia::render('Accounts/Edit', [
-            'account' => $account,
-            'accountTypes' => ['Asset', 'Liability', 'Equity', 'Revenue', 'Expense'],
+        
         ]);
     }
     

@@ -55,13 +55,11 @@ class AccountWebController extends Controller
      * Show the form for editing the specified resource (UPDATE - Form View).
      * GET /accounts/{account}/edit
      */
-    public function edit(Account $account)
-    {
-        // Renders the Accounts/Edit React component with the specific account data
-        return Inertia::render('account/edit', [
-        
-        ]);
-    }
+
+    public function edit($account) {
+    $account = Account::find($account);
+    return Inertia::render('account/edit', ['account' => $account]);
+}
     
     /**
      * Update the specified resource in storage (UPDATE - PUT/PATCH).

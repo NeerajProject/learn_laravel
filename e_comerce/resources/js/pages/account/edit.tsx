@@ -16,19 +16,16 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function Edit() {
-      const { data, setData, post, destroy,processing, errors } = useForm({});
-  
-      const handleDelete = (id: number) => {
-  if (confirm('Are you sure you want to delete this account?')) {
-    router.delete(`/account/delete/${id}`);
-  }
-};
-
+export default function Create() {
+      const { data, setData, post, processing, errors } = useForm({
+    name: '',
+    code: '',
+    type: '',
+  });
 
       const handleSubmit = (e) => {
     e.preventDefault();
-     post('/account/edit',data);
+     post('/account/create',data);
   };
 
 

@@ -25,6 +25,7 @@ export default function Create() {
 
       const handleSubmit = (e) => {
     e.preventDefault();
+     post('/account/create',data);
   };
 
 

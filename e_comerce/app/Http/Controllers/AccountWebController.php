@@ -44,7 +44,7 @@ class AccountWebController extends Controller
         Account::create($validated);
 
         // Redirect back to the index page with a success flash message
-        return redirect()->route('accounts.index')
+        return redirect()->route('account.index')
             ->with('success', 'Account created successfully!');
     }
 

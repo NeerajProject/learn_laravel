@@ -15,20 +15,25 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function Dashboard() {
 
-   const { accounts, filters } = usePage().props;
+ const { accounts, filters } = usePage().props;
 
-  // Form state for filter
+  // Form state for search + filter
   const { data, setData } = useForm({
+    search: filters.search || '',
     type: filters.type || '',
   });
 
-  const handleFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setData('type', e.target.value);
+  // Handle search and filter change
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setData(name, value);
 
-    router.get('/account', { type: e.target.value }, { preserveState: true, replace: true });
+    router.get(
+      '/account',
+      { ...data, [name]: value },
+      { preserveState: true, replace: true }
+    );
   };
-
-
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Account" />
@@ -38,14 +43,25 @@ export default function Dashboard() {
       </Link>
                   </div>
 
+  <div>
+      {/* Search + Filter */}
+      <div className="mb-4 flex gap-2">
+        <input
+          type="text"
+          name="search"
+          placeholder="Search by name or code"
+          value={data.search}
+          onChange={handleChange}
+          className="border px-2 py-1 rounded flex-1"
+        />
 
-<div>
-      <div>
-      {/* Filter */}
-      <div className="mb-4 flex items-center gap-2">
-        <label>Filter by Type:</label>
-        <select value={data.type} onChange={handleFilterChange} className="border px-2 py-1 rounded">
-          <option value="">All</option>
+        <select
+          name="type"
+          value={data.type}
+          onChange={handleChange}
+          className="border px-2 py-1 rounded"
+        >
+          <option value="">All Types</option>
           <option value="Asset">Asset</option>
           <option value="Liability">Liability</option>
           <option value="Equity">Equity</option>
@@ -91,8 +107,8 @@ export default function Dashboard() {
         ))}
       </div>
     </div>
-    </div>
-
+        
+     
 
         </AppLayout>
     );

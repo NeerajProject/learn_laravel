@@ -17,20 +17,31 @@ public function index(Request $request)
 {
     $query = Account::query();
 
-    // Filter by type if provided
+    // Search by name or code
+    if ($request->has('search') && $request->search != '') {
+        $search = $request->search;
+        $query->where(function($q) use ($search) {
+            $q->where('name', 'like', "%{$search}%")
+              ->orWhere('code', 'like', "%{$search}%");
+        });
+    }
+
+    // Filter by type
     if ($request->has('type') && $request->type != '') {
         $query->where('type', $request->type);
     }
 
-    // Paginate results (10 per page)
-    $accounts = $query->orderBy('id', 'desc')->paginate(10)
-                     ->withQueryString(); // keeps type in URL for pagination
+    // Paginate with query string
+    $accounts = $query->orderBy('id', 'desc')
+                     ->paginate(50)
+                     ->withQueryString();
 
     return Inertia::render('account/index', [
         'accounts' => $accounts,
-        'filters' => $request->only(['type']), // pass current filter to frontend
+        'filters' => $request->only(['type', 'search']),
     ]);
 }
+
 
     /**
      * Show the form for creating a new resource (CREATE - Form View).

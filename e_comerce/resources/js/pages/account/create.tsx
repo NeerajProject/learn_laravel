@@ -25,7 +25,6 @@ export default function Create() {
 
       const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(e)
   };
 
 
@@ -35,7 +34,7 @@ export default function Create() {
 
             <form className='space-y-4' onSubmit={handleSubmit}>
                 <div className='m-4'>
-                    <Button type="submit">Save</Button>
+                    <Button type="submit" disabled={processing}>Save</Button>
                 </div>
                 <div className="w-8/12 p-4 space-y-4">
 

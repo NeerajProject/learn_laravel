@@ -4,8 +4,8 @@ import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
 import AppLayout from '@/layouts/app-layout';
 import { dashboard} from '@/routes';
 import { type BreadcrumbItem } from '@/types';
-import { Head, Link } from '@inertiajs/react';
-import { usePage } from '@inertiajs/react';
+import { Head, Link ,router} from '@inertiajs/react';
+import { usePage ,useForm} from '@inertiajs/react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -15,7 +15,17 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function Dashboard() {
+
+  const { delete: destroy, processing } = useForm({});
+    
+    
     const { accounts } = usePage().props as { accounts: any[] };
+    
+  const handleDelete = (id: number) => {
+  if (confirm('Are you sure you want to delete this account?')) {
+    router.delete(`/account/delete/${id}`);
+  }
+};
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -33,9 +43,11 @@ export default function Dashboard() {
       <table className="table-auto w-full border">
         <thead>
           <tr>
-            <th className="border px-2 py-1">ID</th>
             <th className="border px-2 py-1">Name</th>
             <th className="border px-2 py-1">Code</th>
+            <th className="border px-2 py-1">Type</th>
+            <th className="border px-2 py-1"></th>
+
           </tr>
         </thead>
         <tbody>
@@ -44,6 +56,15 @@ export default function Dashboard() {
               <td className="border px-2 py-1">{account.name}</td>
               <td className="border px-2 py-1">{account.code}</td>
               <td className="border px-2 py-1">{account.type}</td>
+              <td className="border px-2 py-1">
+<button
+                  onClick={() => handleDelete(account.id)}
+                  className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
+                >
+                  Delete
+                </button>
+
+              </td>
 
             </tr>
           ))}

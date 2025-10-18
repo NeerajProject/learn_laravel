@@ -86,15 +86,19 @@ class AccountWebController extends Controller
     /**
      * Remove the specified resource from storage (DELETE).
      */
-    public function destroy(Account $account)
-    {
-        // In a real application, you would add a check here to ensure 
-        // the account is not linked to any transactions before deleting.
+public function destroy($id)
+{
+    // dd($id);
+    $account = Account::find($id);
 
-        $account->delete();
-
-        // Redirect back to the index page after deletion
-        return redirect()->route('accounts.index')
-            ->with('success', 'Account deleted successfully.');
+    if (!$account) {
+        return redirect()->back()->with('error', 'Account not found.');
     }
+
+    $account->delete();
+
+    return redirect()->route('account.index')->with('success', 'Account deleted successfully.');
+}
+
+
 }

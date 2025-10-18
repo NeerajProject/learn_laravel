@@ -17,7 +17,7 @@ class AccountWebController extends Controller
     {
         $accounts = Account::orderBy('code')->get();
 
-        return Inertia::render('Accounts/Index', [
+        return Inertia::render('account/index', [
             'accounts' => $accounts,
             'accountTypes' => ['Asset', 'Liability', 'Equity', 'Revenue', 'Expense'],
         ]);

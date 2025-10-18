@@ -64,22 +64,22 @@ class AccountWebController extends Controller
     /**
      * Update the specified resource in storage (UPDATE - PUT/PATCH).
      */
-    public function update(Request $request, Account $account)
+public function update(Request $request, $id)
     {
-        $validated = $request->validate([
+        $account = Account::findOrFail($id);
+
+        $request->validate([
             'name' => 'required|string|max:255',
-            // Unique rule: ignore the current account's ID for uniqueness check
-            'code' => ['required', 'string', 'max:20', Rule::unique('accounts', 'code')->ignore($account->id)],
-            'type' => ['required', Rule::in(['Asset', 'Liability', 'Equity', 'Revenue', 'Expense'])],
-            'sub_type' => 'nullable|string|max:100',
+            'code' => 'required|string|max:50|unique:accounts,code,' . $id,
+            'type' => 'required|string|in:Asset,Liability,Equity,Revenue,Expense',
         ]);
 
-        $account->update($validated);
+        $account->update($request->all());
 
-        // Redirect back to the index page with a success flash message
-        return redirect()->route('accounts.index')
-            ->with('success', 'Account updated successfully!');
+        return redirect()->route('account.index')
+            ->with('success', 'Account updated successfully.');
     }
+
 
     /**
      * Remove the specified resource from storage (DELETE).

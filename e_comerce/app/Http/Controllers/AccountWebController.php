@@ -13,14 +13,42 @@ class AccountWebController extends Controller
      * Display a listing of the resource (READ - List View).
      * GET /accounts
      */
-    public function index()
-    {
-        $accounts = Account::all();
+public function index(Request $request)
+{
+    $query = Account::query();
+
+    // Search by name or code
+    if ($request->filled('search')) {
+        $search = $request->search;
+        $query->where(function ($q) use ($search) {
+            $q->where('name', 'like', "%{$search}%")
+              ->orWhere('code', 'like', "%{$search}%");
+        });
+    }
+
+    // Filter by type
+    if ($request->filled('type')) {
+        $query->where('type', $request->type);
+    }
+
+    // Group by column if provided
+    $groupBy = $request->input('group_by');
+    if ($groupBy) {
+        $query->select($groupBy, \DB::raw('count(*) as total'))
+              ->groupBy($groupBy)
+              ->orderBy($groupBy, 'asc');
+    }
+
+    // Paginate
+    $accounts = $query->paginate(10)->withQueryString();
 
     return Inertia::render('account/index', [
-        'accounts' => $accounts
+        'accounts' => $accounts,
+        'filters' => $request->only(['search', 'type', 'group_by']),
     ]);
-    }
+}
+
+
 
     /**
      * Show the form for creating a new resource (CREATE - Form View).

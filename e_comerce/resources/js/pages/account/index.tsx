@@ -99,7 +99,7 @@ export default function Dashboard() {
               key={account.id ?? account.type ?? account.code}
               className="cursor-pointer hover:bg-gray-100"
               onClick={() =>
-                !data.group_by && router.visit(`/account/${account.id}/edit`)
+                !data.group_by && router.visit(`/account/${account.id}`)
               }
             >
               <td>{account.name ?? '-'}</td>

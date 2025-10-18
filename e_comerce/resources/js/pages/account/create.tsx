@@ -5,8 +5,9 @@ import { SelectGroup } from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
-import { Form, Head, Link } from '@inertiajs/react';
+import { Form, Head, Link ,useForm} from '@inertiajs/react';
 import { Label } from '@radix-ui/react-dropdown-menu';
+
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -16,12 +17,23 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function Create() {
+      const { data, setData, post, processing, errors } = useForm({
+    name: '',
+    code: '',
+    type: '',
+  });
+
+      const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log(e)
+  };
+
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Account" />
 
-            <form className='space-y-4'>
+            <form className='space-y-4' onSubmit={handleSubmit}>
                 <div className='m-4'>
                     <Button type="submit">Save</Button>
                 </div>
@@ -31,18 +43,19 @@ export default function Create() {
 
                     <div className="gap-1.5">
                         <Label>Name</Label>
-                        <Input placeholder="Account Name"></Input>
+                        <Input placeholder="Account Name"  value={data.name}
+                  onChange={(e) => setData('name', e.target.value)}></Input>
                     </div>
                     <div className="gap-1.5">
                         <Label>Code</Label>
-                        <Input placeholder="Code" ></Input>
+                        <Input placeholder="Code" value={data.code}  onChange={(e) => setData('code', e.target.value)}></Input>
                     </div>
                    <div className="gap-1.5">
   <label htmlFor="type" className="mdc-floating-label">
     Account Type
   </label>
   <div>
-  <select>
+  <select  value={data.type}  onChange={(e) => setData('type', e.target.value)}>
     <option value="">Select Type</option>
     <option value="Asset">Asset</option>
     <option value="Liability">Liability</option>

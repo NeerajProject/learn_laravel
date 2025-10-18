@@ -13,14 +13,15 @@ class AccountWebController extends Controller
      * Display a listing of the resource (READ - List View).
      * GET /accounts
      */
-    public function index()
-    {
-        $accounts = Account::all();
+public function index()
+{
+    // Paginate accounts, 10 per page
+    $accounts = Account::orderBy('id', 'desc')->paginate(2);
 
     return Inertia::render('account/index', [
-        'accounts' => $accounts
+        'accounts' => $accounts,
     ]);
-    }
+}
 
     /**
      * Show the form for creating a new resource (CREATE - Form View).

@@ -16,16 +16,13 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function Dashboard() {
 
-  const { delete: destroy, processing } = useForm({});
+  const { accounts } = usePage().props;
+
+  const goToPage = (page: number) => {
+    router.get(`/account?page=${page}`, {}, { preserveState: true });
+  };
     
-    
-    const { accounts } = usePage().props as { accounts: any[] };
-    
-  const handleDelete = (id: number) => {
-  if (confirm('Are you sure you want to delete this account?')) {
-    router.delete(`/account/delete/${id}`);
-  }
-};
+
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -35,37 +32,47 @@ export default function Dashboard() {
       <Button> Create</Button>
       </Link>
                   </div>
-            <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-             
 
- <div className="p-4">
-      <h1 className="text-xl font-bold mb-4">Accounts</h1>
-      <table className="table-auto w-full border">
+
+<div>
+      <table className="w-full border">
         <thead>
           <tr>
-            <th className="border px-2 py-1">Name</th>
-            <th className="border px-2 py-1">Code</th>
-            <th className="border px-2 py-1">Type</th>
-
+            <th>Name</th>
+            <th>Code</th>
+            <th>Type</th>
           </tr>
         </thead>
         <tbody>
-          {accounts.map((account) => (
-<tr key={account.id} className="cursor-pointer hover:bg-gray-100" onClick={() => router.visit(`/account/${account.id}`)}>
-              <td className="border px-2 py-1">{account.name}</td>
-              <td className="border px-2 py-1">{account.code}</td>
-              <td className="border px-2 py-1">{account.type}</td>
+          {accounts.data.map((account: any) => (
+            <tr
+              key={account.id}
+              className="cursor-pointer hover:bg-gray-100"
+              onClick={() => router.visit(`/account/${account.id}`)}
+            >
+              <td>{account.name}</td>
+              <td>{account.code}</td>
+              <td>{account.type}</td>
             </tr>
           ))}
         </tbody>
       </table>
+
+      {/* Pagination */}
+      <div className="flex gap-2 mt-4">
+        {accounts.links.map((link: any, index: number) => (
+          <Button
+            key={index}
+            disabled={!link.url}
+            onClick={() => link.url && router.visit(link.url)}
+          >
+            <span dangerouslySetInnerHTML={{ __html: link.label }} />
+          </Button>
+        ))}
+      </div>
     </div>
 
 
-             <div>
-                
-             </div>
-            </div>
         </AppLayout>
     );
 }

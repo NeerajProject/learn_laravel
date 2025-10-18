@@ -13,13 +13,22 @@ class AccountWebController extends Controller
      * Display a listing of the resource (READ - List View).
      * GET /accounts
      */
-public function index()
+public function index(Request $request)
 {
-    // Paginate accounts, 10 per page
-    $accounts = Account::orderBy('id', 'desc')->paginate(2);
+    $query = Account::query();
+
+    // Filter by type if provided
+    if ($request->has('type') && $request->type != '') {
+        $query->where('type', $request->type);
+    }
+
+    // Paginate results (10 per page)
+    $accounts = $query->orderBy('id', 'desc')->paginate(10)
+                     ->withQueryString(); // keeps type in URL for pagination
 
     return Inertia::render('account/index', [
         'accounts' => $accounts,
+        'filters' => $request->only(['type']), // pass current filter to frontend
     ]);
 }
 
